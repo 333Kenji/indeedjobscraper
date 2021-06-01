@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Indeed Web Scraper{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block page_content %}
+
+<div class="top-box">
+<a class="github-button" href="https://github.com/" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" data-show-count="true" aria-label="Star Kenji/indeedapp on GitHub">Star</a>
+</div>
+
+<div class="row">
+    <div class="title">
+        Indeed Job Postings
+    </div>
+</div>
+
+
+
+
+<div class="row">
+    <div class="container-fluid">
+        <iframe src="../static/images/cumsum.html" width="100%" height="300" frameBorder="0"></iframe>
+    </div>
+</div>
+
+<div class="row">
+    <div class="container-fluid">
+        <iframe src="../static/images/bar.html" width="100%" height="300" frameBorder="0"></iframe>
+    </div>
+</div>
+
+<div class="row">
+    <div class="container-fluid">
+        <iframe src="../static/images/test.html" width="100%" height="300" frameBorder="0"></iframe>
+    </div>
+</div>
+
+
+{% endblock %}
