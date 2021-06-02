@@ -35,7 +35,7 @@ aiofiles = "*"
 jinja2 = "*"
 pydantic = "*"
 seaborn = "*"
-bs4 = "*"
+
 
 [requires]
 python_version = "3"
