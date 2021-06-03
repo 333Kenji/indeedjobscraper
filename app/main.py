@@ -132,7 +132,7 @@ def index(request: Request):
 
 #app.include_router(database.router, tags=["Database"])
 # app.include_router(ml.router, tags=["Machine Learning"])
-app.include_router(viz.router, tags=["Visualization"])
+#app.include_router(viz.router, tags=["Visualization"])
 # 
 app.add_middleware(
     CORSMiddleware,
