@@ -56,11 +56,11 @@ application = app
 #    return records
 #
 
-
-templates = Jinja2Templates(directory='app/templates')  # define the templates directory for Jinja2 to look at
-app.mount("/static", StaticFiles(directory="app/static"), name="static")  # define the directory for the static files
+# Define templates directory for Jinja2
+templates = Jinja2Templates(directory='app/templates')  
+# Define the directory for the static files
+app.mount("/static", StaticFiles(directory="app/static"), name="static")  
 #models.Base.metadata.create_all(engine)  # create all sql tables (empty) if they don't exist
-
 
 
 
@@ -70,7 +70,11 @@ def index(request: Request):
 
     #df = pd.read_csv('data/graph_ready.csv', index_col=0)
     viz.create_cumsum_plot()
-    viz.bar()
+    viz.create_cumsum_plot()
+    viz.create_bar()
+    viz.create_usmap()
+    viz.create_sunburst()
+    viz.create_table()
     return templates.TemplateResponse('index.html', {
         'request': request})
 
@@ -128,7 +132,7 @@ def index(request: Request):
 
 #app.include_router(database.router, tags=["Database"])
 # app.include_router(ml.router, tags=["Machine Learning"])
-# app.include_router(viz.router, tags=["Visualization"])
+app.include_router(viz.router, tags=["Visualization"])
 # 
 app.add_middleware(
     CORSMiddleware,
