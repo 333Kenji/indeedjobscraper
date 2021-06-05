@@ -1,16 +1,17 @@
-from fastapi import FastAPI
+import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+
+
 
 # from app import db, ml, viz
 #from app import database, models, schemas
 from app.src import viz
 
 
-#
 from typing import List
-import uvicorn
-import pandas as pd
+
+
 # from app import reddit_api
 from sqlalchemy.orm import Session
 #from app.database import engine, get_db, SessionLocal
@@ -70,7 +71,6 @@ def index(request: Request):
 
     #df = pd.read_csv('data/graph_ready.csv', index_col=0)
     viz.create_cumsum_plot()
-    viz.create_cumsum_plot()
     viz.create_bar()
     viz.create_usmap()
     viz.create_sunburst()
@@ -86,48 +86,6 @@ def index(request: Request):
     #return templates.TemplateRespose('index.html')
 
 
-#@app.post("/exe", response_class=HTMLResponse, status_code=status.HTTP_201_CREATED)
-#def learn(request: Request, subreddit: str = Form('todayilearned'), db: Session = Depends(get_db)):
-#    # get the result of a request on the reddit api as json. a random post from the specified subreddit
-#    res = reddit_api.get_reddit(subreddit=subreddit)
-#    # get preprocessed post data as a dictionary
-#    data = reddit_api.get_post_details(res)
-#    # insert post data in sql table
-#    data_for_post = sql_table_entities.Post(reddit_post_id=data['reddit_post_id'], title=data['title'],
-#                                            score=data['score'], created=data['created'],
-#                                            upvote_ratio=data['upvote_ratio'], thumbnail=data['thumbnail'],
-#                                            url=data['url'],
-#                                            permalink=data['permalink'], num_comments=data['num_comments'],
-#                                            total_awards_received=data['total_awards_received'],
-#                                            subreddit=data['subreddit'], timestamp_accessed=data['timestamp_accessed'])
-#    db.add(data_for_post)
-#    db.commit()
-#    db.refresh(data_for_post)
-#
-#    # read table of posts and create the cumulative plot in the static folder, so it will be rendered later in jinja
-#    posts = pd.read_sql('posts', engine)
-#    reddit_api.create_cumsum_plot(posts)
-#
-#    # get preprocessed post comment data as a pd DataFrame
-#    comments = reddit_api.get_comments_details(res)
-#
-#    # insert each comment in db
-#    for i, row in comments.iterrows():
-#        data_for_comment = models.Comment(reddit_comment_id=row['reddit_comment_id'],
-#                                                      score=row['score'], body=row['body'],
-#                                                      total_awards_received=row['total_awards_received'],
-#                                                      owner=data_for_post)  # for 1:N relationship
-#        db.add(data_for_comment)
-#        db.commit()
-#        db.refresh(data_for_comment)
-#
-#    return templates.TemplateResponse('index.html', {
-#        'request': request, 'title': data['title'], 'score': data['score'], 'created': data['created'],
-#        'thumbnail': data['thumbnail'], 'url': data['url'],
-#        'upvote_ratio': data['upvote_ratio'], 'permalink': data['permalink'],
-#        'total_awards_received': data['total_awards_received'], 'num_comments': data['num_comments'],
-#        'comments': comments  # comments is a pd DataFrame. Everything else is a single value
-#    })
 
 
 #app.include_router(database.router, tags=["Database"])
