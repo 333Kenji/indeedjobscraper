@@ -177,7 +177,11 @@ app1
 app2
 reddit_api
 postgres.ipynb
-/docs
 notebook.ipynb
 workbench.ipynb
-*.ipynb
+confusion.py
+webscraper_orig.ipynb
+webscraper_orig2.ipynb
+viz.py
+viz.ipynb
+viz2.ipynb

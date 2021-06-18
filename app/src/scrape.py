@@ -1,15 +1,13 @@
-import numpy as np
-import pandas as pd
-
 import csv
-import time
+from datetime import datetime, date
 import requests
-from random import random
 from bs4 import BeautifulSoup
-from datetime import datetime
+import pandas as pd
+import numpy as np
+from random import random
+import time
 
-# To deal with warnings seaborn may generate
-import warnings
+import warnings # current version of seaborn generates a bunch of warnings that we'll ignore
 warnings.filterwarnings("ignore")
 
 
@@ -23,8 +21,7 @@ def get_URL(position, location):
     Returns:
         [string]: [formatted url]
     """
-    
-    template = 'https://www.indeed.com/jobs?q={}&l={}&fromage=3&limit=50&sort=date'
+    template = 'https://www.indeed.com/jobs?q={}&l={}&fromage=7&sort=date'
     position = position.replace(' ', '+')
     location = location.replace(' ', '+')
     url = template.format(position, location)
@@ -50,9 +47,6 @@ def get_features(web):
     
     
     def job_description(job_url):
-        # I'd noticed that most Indeed webscrapers either skip the descriptive text contained
-        # in the actual posting. Here, I repeat much of the process used to retrieve the job
-        # postings but use the url given by those postings to dig a bit deeper.
         """[Retrieves data from job summary page attached to each query result]
 
         Args:
@@ -61,6 +55,9 @@ def get_features(web):
         Returns:
             [tuple of strings]: [job requirements, job description]
         """
+        # I'd noticed that most Indeed webscrapers either skip the descriptive text contained
+        # in the actual posting. Here, I repeat much of the process used to retrieve the job
+        # postings but use the url given by those postings to dig a bit deeper.
         response_jobDesc = requests.get(job_url)
         soup = BeautifulSoup(response_jobDesc.text, 'html.parser')
         # https://stackoverflow.com/questions/63231164/indeed-web-scraping-python-selenium-beautifulsoup
@@ -73,7 +70,7 @@ def get_features(web):
         except:
             description = 'None'
         # A nifty little workaround for evading detection.
-        time.sleep(1+random())
+        time.sleep(3+random()*2)
         return requirements, description
     
     requirements, description = job_description(job_url)
@@ -90,7 +87,15 @@ def get_features(web):
 
 
 def main(position, location):
-    """Run the main program routine"""
+    """[Conducts the web scraping process]
+
+    Args:
+        position ([string]): [job position for indeed.com query]
+        position ([string]): [job location for indeed.com query]
+        
+        Returns:
+        [csv]: [scraped data]
+    """
     data = []
     url = get_URL(position, location)
     
@@ -103,17 +108,17 @@ def main(position, location):
             datapoint = get_features(web)
             data.append(datapoint)
             # Again, a nifty little workaround for evading detection.
-            time.sleep(1+random())
+            time.sleep(2+random()*3)
         try:
             url = 'https://www.indeed.com' + soup.find('a', {'aria-label': 'Next'}).get('href')
         except AttributeError:
             break
-    # Using the position string to name the output file so in the future we can 
-    # diversify the jobs the app can process.
+
     name = position.replace(' ','_')
+    loc = location.replace(' ','_')
+    day = date.today()
     # save the job data
-    with open(f'../data/scraped_{name}.csv', 'w', newline='', encoding='utf-8') as f:
+    with open(f'../data/scraped_{name}_{loc}_{day}.csv', 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(['JobTitle', 'Company', 'Location', 'PostDate', 'ExtractDate', 'Summary', 'Pay', 'JobUrl', 'Requirements', 'Description'])
         writer.writerows(data)
-    return data

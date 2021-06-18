@@ -1,8 +1,17 @@
-
-import pandas as pd
 import numpy as np
+import pandas as pd
 import csv
+import matplotlib.pyplot as plt
 from datetime import datetime, date, timedelta
+
+plt.rcParams['figure.figsize'] = (8, 6)
+plt.rcParams['font.size'] = 17
+
+import seaborn as sns
+import warnings # current version of seaborn generates a bunch of warnings that we'll ignore
+warnings.filterwarnings("ignore")
+sns.set(style="ticks", color_codes=True)
+
 
 def munge():
     """[Cleaning and Featuring Engineering]
@@ -15,7 +24,7 @@ def munge():
     """
     # Using the position variable to select/process scraped data based the on the query that
     # generated it.
-    data = pd.read_csv(f'../data/scraped_data_scientist.csv', index_col=0)
+    data = pd.read_csv(f'../data/total.csv', index_col=1)
     #TODO just name is salary in scrape.py
 
     
@@ -39,7 +48,7 @@ def munge():
         "PR":"Puerto Rico", "RI":"Rhode Island", "SC":"South Carolina", "SD":"South Dakota", "TN":"Tennessee",
         "TX":"Texas", "UT":"Utah", "UM":"U.S. Minor Outlying Islands", "VT":"Vermont", "VI":"Virgin Islands", "VA":"Virginia",
         "WA":"Washington", "WV":"West Virginia", "WI":"Wisconsin", "WY":"Wyoming"}
-
+        extras = ["Alaska", "Alabama", "Arkansas", "American Samoa", "Arizona", "California", "Colorado", "Connecticut", "District ", "of Columbia", "Delaware", "Florida", "Georgia", "Guam", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Virgin Islands", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"]
         try:
             # These two values are sometimes present instead of a specific state
             if i == 'United States':
@@ -48,11 +57,18 @@ def munge():
                 return 'Remote'
             elif i == 'New York State':
                 return 'NY'
+            elif i == 'Washington State':
+                return 'WA'
+            
+            #elif i in extras:
+                #return i
             # if neither of the above are all we've been given, we can pull the
             # abbrieviation.
             else:
                 for k,v in states.items():
                     if i[-2:] == k:
+                        return k
+                    elif i == v:
                         return k
         except:
             return i
@@ -85,12 +101,10 @@ def munge():
             elif i == 'Remote':
                 return 'Remote'
             else:
-                for k,v in states.items():
-                    if i[-2:] == k:
-                        city = i[0:-2].strip().replace(',', '')
+                city = i[0:-2].strip().replace(',', '')
                 return city
         except:
-            pass
+            'None'
 
 
     def count_dupes(data):
@@ -230,7 +244,8 @@ def munge():
             return i
 
 
-    def dateposted_(i):
+
+    def pDate(row):
         #TODO 64?
         """[Builds a column for date posted. since Indeed.com only gives values for
         postdate relative to day of query.]
@@ -241,14 +256,12 @@ def munge():
         Returns:
             [date]: [The actual date the posting was created]
         """
-        data['ExtractDate'] = data['ExtractDate'].astype('datetime64')
-        extractdate = data['ExtractDate'][0]
-        days_ago = i
-        wk_ago = timedelta(days=-days_ago)
+        days_ago = row['PostDate']
+        delta = timedelta(days_ago)
         try:
-            return extractdate + wk_ago
+            return row['ExtractDate'] - delta
         except:
-            return i
+            return row
 
 
     def annual(data):
@@ -312,11 +325,16 @@ def munge():
         """
         data["PostDate"] = data["PostDate"].str.replace("Active ", "")
         data["PostDate"] = data["PostDate"].str.replace(" day ago", "")
+        data["PostDate"] = data["PostDate"].str.replace("%+ days ago", "")
+        data["PostDate"] = data["PostDate"].str.replace("+", "")
         data["PostDate"] = data["PostDate"].str.replace(" days ago", "")
         data["PostDate"] = data["PostDate"].str.replace("Just posted", "0")
         data["PostDate"] = data["PostDate"].str.replace("Today", "0")
+        data["PostDate"] = data["PostDate"].str.replace("today", "0")
         data['PostDate'] = data['PostDate'].astype('int')
         return data
+    
+
 
     def roles(data):
         """[Supports web app display by providing website view table with information
@@ -363,10 +381,10 @@ def munge():
     # featurization to have occured prior to their call/application.
     data["State"] = data["Location"].apply(states_)
     data["City"] = data["Location"].apply(cities_)
-
+    data['ExtractDate']= pd.to_datetime(data['ExtractDate'])
     data = chars(data)
     data = postD_int(data)
-    data["DatePosted"] = data["PostDate"].apply(dateposted_)
+    data['DatePosted'] = data.apply( lambda row : pDate(row), axis = 1)
     data = deduper(data)
     data = sal_chars(data)
     data = Pay_period(data)
@@ -379,7 +397,7 @@ def munge():
     data = acronyms(data)
 
 
-
+    
 
     # Drop a few cols we no longer need
     data.drop(columns=['Pay','ExtractDate', 'PostDate'], inplace=True)
@@ -387,7 +405,7 @@ def munge():
     for item in ['JobTitle', 'Company', 'Summary', 'Requirements','Description', 'City']:
         data[item] = data[item].str.lower()
     data = roles(data)
-    data.to_csv(f'../data/munged.csv')
+    data.to_csv(f'../data/munged_data.csv', index=False)
     return data
 
 

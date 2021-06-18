@@ -6,13 +6,9 @@ import uvicorn
 
 # from app import db, ml, viz
 #from app import database, models, schemas
-from app.src import viz
 
 
 from typing import List
-
-
-# from app import reddit_api
 from sqlalchemy.orm import Session
 #from app.database import engine, get_db, SessionLocal
 from fastapi.responses import HTMLResponse
@@ -33,7 +29,7 @@ Use data to find a place right for you to live.
 app = FastAPI(
     title="Indeed App API",
     description=description,
-    docs_url="/",
+    docs_url="/API",
 )
 application = app
 #def get_db():
@@ -65,16 +61,16 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 
 
-@app.get('/ex', response_class=HTMLResponse)
+@app.get('/', response_class=HTMLResponse)
 def index(request: Request):
     #posts = pd.read_sql('posts', engine)
 
     #df = pd.read_csv('data/graph_ready.csv', index_col=0)
-    viz.create_cumsum_plot()
-    viz.create_bar()
-    viz.create_usmap()
-    viz.create_sunburst()
-    viz.create_table()
+    #viz.create_cumsum_plot()
+    #viz.create_bar()
+    #viz.create_usmap()
+    #viz.create_sunburst()
+    #viz.create_table()
     return templates.TemplateResponse('index.html', {
         'request': request})
 
