@@ -1,19 +1,39 @@
- 
-### Introduction
-This project is a comprehensive analysis of Indeed.com job postings for data scientists and was produced by combining natural language processing with an advanced linear regression algorithm which served as the principal component in a stack of machine learning algorithms used on 5000+ postings scrapped from that site between mid-April to late June. By analyzing text gleaned from both the general search results as well as each individual post, I was able to predict salary brackets for postings that did not have a given salary while turning the most important words, locations, and short phrases into lists associated with each range.
-
-Combining these salary estimates with refined location and post date values I was able to reproduce not only an enhanced table of job postings but also an interactive web-based application built using tableau delivered via FastAPI (an extension of the Flask framework), running on an AWS EC2 instance.
-
-### Purpose and Scope
-As a recent graduate of Galvanize's Data Science Immersive boot camp, and coming from both an operations management background in the military and more recently the service industry - and of course as a job seeker, I was keen to develop a relevant and user-friendly application that I, my fellow alumni, recruiters, and hiring staff could all use to gain insight into this particular and rapidly expanding sector of the job market. I also wanted to make use of my experience with front-end development which I'd dabbled with as a kid and also took as my re-entry into what has now become a pursuit of becoming a full-stack data scientist.
-
-Drawing from my experience as a bartender and server in NYC, where I communicated with guests to determine their preferences in order to optimize both their experience and to grow and strengthen our client base, I took note of the similarities between the job search/hiring process and this key to providing good service. For example, in the selling of Italian wine and or locally sourced cheeses, there are domain-specific terminologies that both guests and myself would use in determining which particular wine or types of cheese they were drawn towards.
-
-Descriptive terms for wine such as 'dry', 'full-bodied', 'spicey', and for cheeses 'soft', 'stinky', 'sheep's milk’, provide a linguistic framework that can match need or preference to what’s available. One's resume describes a collection of their marketable skills and abilities while a job posting uses similar terms to describe the role, duties, and requirements of the job. Therefore, presenting a project portfolio is in many ways very similar to giving someone a taste of the Barolo or Chianti or bringing out a sample cheeseboard. By identifying and sharing the most important terms in the language of data science, as relevant to the hiring process, I hope to provide insight to both job and talent seekers so successful pairings can be made.
-
 ### Project Overview
+The objective of this project is to provide the user with an interactive dashboard allowing for a comprehensive visual and statistical analysis of the data science job market. The data consists of text scraped from every search result for 'data science/scientist' on Indeed.com using the [Requests](https://docs.python-requests.org/en/master/ "Requests Library"), Tor, and [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/ "BeautifulSoup") libraries.
 
+However, only 10% of these job postings contain salary information, severely limiting the scope of possible analysis. To solved this problem I created four categories based on the quartiles of the postings with salaries, classed as Q1, Q2, Q3, and Q4.
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/quartiles.jpg "Original Data Split By Quartile")
+
+To apply this categorization to the remaining job postings I used sklearn's implementation of [TF-IDF vectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html "Term Frequency-Inverse Document Frequency") to extract the importance of words and phrases most associated with each quartile as they appear in the job postings. The top scoring 30% were then selected as features for a new table where each job posting is represented by its term scores. For each class this generally produces 90 features but I also added fourteen static binary features determined by the presence, or absence, of any of the top or bottom 30% of terms.
+
+In order to predict for all four target labels, while extracting their associated terms and importance scores, I used linear regression in an all-vs-one strategy                                                                                                                                                                                                                      , iterating over each of the four feature sets  on a table composed of the , using the top 30% of terms to appear throughout all postings for each label. 
+
+
+
+
+
+I then 
+
+Using these scores to formulate a table of
 Note: For a step-by-step walkthrough of this entire process I recommend checking out the series of notebooks located in the docs folder. These are expanded versions of the same code contained in the application itself which is composed as a flask application (app folder) and is deployed to an EC2 instance which automatically reads code updates pushed to my git repository.
+
+
+
+#### Recombination
+Finally, the tables with given and predicted salary ranges were concatenated so the dashboard user could analyze and filter all of the job postings by location, company, salary bracket, and word/phrase importance.
+
+
+
+
+
+
+
+- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/ "BeautifulSoup")
+
+
+
+
 
 
 ## The Data
@@ -37,10 +57,10 @@ The logistic regression model I used incorporated cross-validation which boosts 
 
 At this point, I needed to make a few design choices for the project. I could very well have conducted linear regression which works for predicting continuous values, i.e. specific dollar amounts. Or, I could have used logistic regression or another classifier that could predict for multiple categories since I was already working towards salary brackets as opposed to dollar amounts. For the purpose of this project, a specific dollar amount is neither relevant nor is it useful. Salary negotiations simply don't start with a dollar amount. Any dollar amount could and should be treated as a starting point indicating an expected range to work with. In the case of using a multi-classifier, I wanted to make sure that I could glean as much information about my data and the algorithm's performance as possible for each salary bracket. In particular, the words associated with each range so they could be conveyed to the user via the app if they chose to use the filters I built into the dashboard.
 
-To accomplish this, I actually conduct linear regression several times by building a target variable for each salary bracket and in each iteration calling that particular column as the dependent variable. Also, to expand upon this project in the future I wrapped the entire process of splitting, featurization (binary and tfid), a dummy test, and even a decision tree classifier to distill the most important terms even further into a single function that can incorporate new data as I continue to expand this collection of 5000+ rows of data in the coming months. The algorithms used are isolated and discarded after each iteration and will perform better as I add to my collection of scrapped data.
+To accomplish this, I actually conduct linear regression several times by building a target variable for each salary bracket and in each iteration calling that particular column as the dependent variable. Also, to expand upon this project in the future I wrapped the entire process of splitting, featurization (binary and tf-idf), a dummy test, and even a decision tree classifier to distill the most important terms even further into a single function that can incorporate new data as I continue to expand this collection of 5000+ rows of data in the coming months. The algorithms used are isolated and discarded after each iteration and will perform better as I add to my collection of scrapped data.
 
 ### Results
-Working with multiple models provides for a great deal of parameter tuning possibilities. For example, using just the bare minimum parameters that would be suited for this problem I was able to predict only 42% of the missing salaries but after tuning the logistic regression and tfid models I was able to expand that to 65%. And with 10% of the postings containing salary data I have salary ranges for 76% of the data. This is the score I'll be improving over time as I collect more data and continue to improve the models.
+Working with multiple models provides for a great deal of parameter tuning possibilities. For example, using just the bare minimum parameters that would be suited for this problem I was able to predict only 42% of the missing salaries but after tuning the logistic regression and tf-idf models I was able to expand that to 65%. And with 10% of the postings containing salary data I have salary ranges for 76% of the data. This is the score I'll be improving over time as I collect more data and continue to improve the models.
 
 In addition to returning the enhanced search results, the machine learning function also produces performance metrics for each salary range prediction as well as their associated word lists.
 
@@ -54,6 +74,7 @@ This will be great to expand up in the future, but for the sake of time and simp
 
 
 Future:
+Score 1 vs all
 Replace some of the munging processes with some of the parameters included in sklearn's TfidfVectorizer algorithm. Capitalization and possibly special characters.
 
 Add a top cities list and clear cities from top terms.
