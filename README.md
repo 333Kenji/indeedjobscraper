@@ -29,6 +29,9 @@ Note: For a step-by-step walkthrough of this entire process I recommend checking
 
 ## The Data
 I initially considered using Indeed.com's API for this project since I've made extensive use of APIs in the past as both a student of data science and also for gaining insights into the stock market or certain MMOs whose developers allow their players to access data in real-time. APIs are easy and quick to work with so long as you stay under the rate limit. Unfortunately, the documentation for Indeed's API is rather incomprehensible and due to some recent change on their end might not even be available to the general public. So instead, I chose to try my hand at web scraping which, as it turns out, can be extremely tedious, nuanced, yet rewarding.
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/htmlInspect.jpg "Browser Inspection Shows HTML Structure")
+
 The process of reading a web page using python and the BeautifulSoup library was a straightforward one. A template web address is passed through the internet as a get request and in return, one receives the full HTML of the targeted page. By scanning the HTML for particular fields like 'Job Title', 'Post Date', and 'Summary' I was able to build a table of 5000+ rows of data represented by a total of ten initial features.
 
 
