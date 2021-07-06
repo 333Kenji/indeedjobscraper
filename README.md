@@ -5,31 +5,22 @@ However, only 10% of these job postings contain salary information, severely lim
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/quartiles.jpg "Original Data Split By Quartile")
 
-To apply this categorization to the remaining job postings I used sklearn's implementation of [TF-IDF vectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html "Term Frequency-Inverse Document Frequency") to extract the importance of words and phrases most associated with each quartile as they appear in the job postings. The top scoring 30% were then selected as features for a new table where each job posting is represented by its term scores. For each class this generally produces 90 features but I also added fourteen static binary features determined by the presence, or absence, of any of the top or bottom 30% of terms.
-
-In order to predict for all four target labels, while extracting their associated terms and importance scores, I used linear regression in an all-vs-one strategy                                                                                                                                                                                                                      , iterating over each of the four feature sets  on a table composed of the , using the top 30% of terms to appear throughout all postings for each label. 
+To apply this categorization to the remaining job postings I used sklearn's implementation of [TF-IDF vectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html "Term Frequency-Inverse Document Frequency") to extract the top and bottom 30% of words and phrases associated with each quartile, as features in a new table where each posting is represented by the TF-IDF scores of its terms. For each class this generally produces 90 features but I also added fourteen static binary features determined by the presence, or absence, of any of the top or bottom 30% of terms.
 
 
+At this point I"ve abstracted my text format data into numerically represented data which is the format reuired by linear regression. However, in order to predict for all four target labels, while also extracting their associated terms and importance scores, I needed to employ a [One-vs-All](https://scikit-learn.org/stable/modules/generated/sklearn.multiclass.OneVsRestClassifier.html "one-vs-all/rest") strategy. In this implementation of that strategy, I iterate over the data using linear regressinon as a binary classifier for each of the quartile classes, taking the highest scoring probability as the likely class to assign each job posting.
+
+Finally, the tables with given and predicted salary ranges were concatenated so the dashboard user could analyze and filter all of the job postings by location, company, salary bracket, and term relevance.
 
 
 
-I then 
 
-Using these scores to formulate a table of
+
+
+
 Note: For a step-by-step walkthrough of this entire process I recommend checking out the series of notebooks located in the docs folder. These are expanded versions of the same code contained in the application itself which is composed as a flask application (app folder) and is deployed to an EC2 instance which automatically reads code updates pushed to my git repository.
 
 
-
-#### Recombination
-Finally, the tables with given and predicted salary ranges were concatenated so the dashboard user could analyze and filter all of the job postings by location, company, salary bracket, and word/phrase importance.
-
-
-
-
-
-
-
-- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/ "BeautifulSoup")
 
 
 
@@ -39,6 +30,10 @@ Finally, the tables with given and predicted salary ranges were concatenated so 
 ## The Data
 I initially considered using Indeed.com's API for this project since I've made extensive use of APIs in the past as both a student of data science and also for gaining insights into the stock market or certain MMOs whose developers allow their players to access data in real-time. APIs are easy and quick to work with so long as you stay under the rate limit. Unfortunately, the documentation for Indeed's API is rather incomprehensible and due to some recent change on their end might not even be available to the general public. So instead, I chose to try my hand at web scraping which, as it turns out, can be extremely tedious, nuanced, yet rewarding.
 The process of reading a web page using python and the BeautifulSoup library was a straightforward one. A template web address is passed through the internet as a get request and in return, one receives the full HTML of the targeted page. By scanning the HTML for particular fields like 'Job Title', 'Post Date', and 'Summary' I was able to build a table of 5000+ rows of data represented by a total of ten initial features.
+
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/response.jpg "The Specific HTML Fields We're Gleaning From")
+
 A major hurdle in web scraping is doing so undetected. Make too many queries, at a high frequency, and you may very get IP banned for the day, or worse. Like rate limits for APIs (how many queries one can make in a given interval), IP banning is used to limit the traffic a website's server must accommodate. For example, in a distributed denial-of-service attack (DDoS), a website is taken down by directing hundreds or thousands of machines to simultaneously try to access a website, overwhelming its servers and causing it to crash.
 Although web scraping is generally frowned upon since a computer can make thousands of requests every minute a good practice is to play nice and space out the requests a bit. To do this I added a random delay between requests, at a rate of anywhere between 1 and 3 seconds. Additionally, I used the tor library (yes, that tor) t make my PC’s identity in case even my delayed requests were noticed by Indeeds server monitors.
 Because my requests were sometimes for thousands of posts at once, and interruptions and 24hr bans did occur with some frequency, I opted to store the data in .csv format (similar to an excel spreadsheet) so I could have a hard copy in case my web scraping was interrupted.
@@ -74,7 +69,6 @@ This will be great to expand up in the future, but for the sake of time and simp
 
 
 Future:
-Score 1 vs all
-Replace some of the munging processes with some of the parameters included in sklearn's TfidfVectorizer algorithm. Capitalization and possibly special characters.
 
+Replace some of the munging processes with some of the parameters included in sklearn's TfidfVectorizer algorithm. Capitalization and possibly special characters.
 Add a top cities list and clear cities from top terms.
