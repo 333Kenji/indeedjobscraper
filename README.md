@@ -7,12 +7,17 @@ The objective of this project is to provide the user with an interactive dashboa
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/response.jpg "The Specific HTML Fields We're Gleaning From")
 
 
+
+
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/imbalanced.jpg "It's remained at about 10% since start of project")
 However, only 10% of these job postings contain salary information, severely limiting the scope of analysis. 
 
+
+
+To solved this problem I created four categories based on the quartiles of the postings with salaries, classed as Q1, Q2, Q3, and Q4.
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/a.jpg "Extracted Features")
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/quartiles.jpg "Original Data Split By Quartile")
-To solved this problem I created four categories based on the quartiles of the postings with salaries, classed as Q1, Q2, Q3, and Q4.
-
 
 
 To apply this categorization to the remaining job postings I used sklearn's implementation of [TF-IDF vectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html "Term Frequency-Inverse Document Frequency") to extract the top and bottom 30% of words and phrases associated with each quartile, as features in a new table where each posting is represented by the TF-IDF scores of its terms. For each class this generally produces 90 features but I also added fourteen static binary features determined by the presence, or absence, of any of the top or bottom 30% of terms.
@@ -34,15 +39,26 @@ Finally, the tables with given and predicted salary ranges were concatenated so 
 
 
 
+
+Here's a preview of the [Interactive Tableau Dashboard](indeedwebapp-env.eba-qt8deefm.us-east-2.elasticbeanstalk.com/ "Advanced Job Search") I built using this data, check it out!
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/dashboardPrev.jpg "Final")
+
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/dashboardBott.jpg "Final")
+
+
+
+
+
+
+
+
+
+
+### Project Summary
 Note: For a step-by-step walkthrough of this entire process I recommend checking out the series of notebooks located in the docs folder. These are expanded versions of the same code contained in the application itself but contain explanatory visuals and dynamic text drawn directly from the most current dataset.
 which is composed as a flask application (app folder) and is deployed to an EC2 instance which automatically reads code updates pushed to my git repository.
-
-
-
-
-
-
-
 
 ## The Data
 I initially considered using Indeed.com's API for this project since I've made extensive use of APIs in the past as both a student of data science and also for gaining insights into the stock market or certain MMOs whose developers allow their players to access data in real-time. APIs are easy and quick to work with so long as you stay under the rate limit. Unfortunately, the documentation for Indeed's API is rather incomprehensible and due to some recent change on their end might not even be available to the general public. So instead, I chose to try my hand at web scraping which, as it turns out, can be extremely tedious, nuanced, yet rewarding.
@@ -74,7 +90,7 @@ For for the latter  I combined two methods, the Z-Score and quartiles in order t
 
 
 
-### Machine Learning
+## Machine Learning
 Since I'd already used ensemble methods like random forests to solve classification challenges in several of my Galvanize projects I decided to work with an algorithm that I'd not yet incorporated into a large project. Logistic regression, which leans on  statistical likelihood as opposed to probability serves as an excellent classifier in this case especially since the weighted importance of term that appears in each posting, relative to their appearance across all postings are given by the
 transformer component of the TfidfVectorizer algorithm as scaled floating-point values.
 The logistic regression model I used incorporated cross-validation which boosts the fidelity of the model's results by providing an average of its performance and is capable of handling mixed data to some extent. I mention this because my final set of features is actually comprised of two tables, the first being the importance of each term as mentioned previously, and the second being a set of binary features that would serve as strong indicators for my classification. For example, if Washinton, NYC, and Texas appear in rows most associated with a particular salary range, and if they appear in a particular posting, the binary feature representing the state would be labeled as 1.0, and 0.0 if not. Depending on the amount of data I had at any given time, the tfid features were many times greater than my set number of 14 binary features; currently they stand at 90+ features, one for each of the most important terms that appear throughout the corpus of job postings.
@@ -92,7 +108,7 @@ To summarize the table, Q serves as the final verdict - the most likely quartile
 
 
 
-### Results
+## Results
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/final.jpg "Final")
 Finally, the tables with given and predicted salary ranges were concatenated so the dashboard user could analyze and filter all of the job postings by location, company, salary bracket, and term relevance. Notice that this is our original, cleaned, data but now we have a salary range for every posting.
 
@@ -103,8 +119,11 @@ In addition to returning the enhanced search results, the machine learning funct
 
 
 ### Delivering Analysis
-Tieing things back to my interest in providing interactive front-end experiences I built the deployment of this project as a FlskAPI application. Like Flask, this framework allows for a great deal of control over the look and feel of a webpage, alllowing for complete control over python, javascript, CSS, HTML, and makes use of the Jinja language which I find extremely useful for making modular websites. What sets FastAPI apart as an extension of FLask is that it also allows for APIs to be developed so users can interact with a database through the forward-facing interface of a website.
+Tieing things back to my interest in providing interactive front-end experiences I built the deployment of this project as a FlaskAPI application. Like Flask, this framework allows for a great deal of control over the look and feel of a webpage, alllowing for complete control over python, javascript, CSS, HTML, and makes use of the Jinja language which I find extremely useful for making modular websites. What sets FastAPI apart as an extension of Flask is that it also allows for APIs to be developed so users can interact with a database through the forward-facing interface of a website.
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/dashboardPrev.jpg "Final")
 
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/dashboardBott.jpg "Final")
 This will be great to expand up in the future, but for the sake of time and simplicity, I decided to build a dashboard using Tableau which is a platform I'd previously had no experience with unlike Flask. This has allowed me to quickly and a daresay successfully translate my analysis into a useful or at least interesting tool that users can easily manipulate as they explore the data.
 
 
