@@ -13,22 +13,30 @@ The objective of this project is to provide the user with an interactive dashboa
 
 
 
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/imbalanced.jpg "It's remained at about 10% since start of project")
+
 
 However, only 10% of these job postings contain salary information, severely limiting the scope of analysis. 
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/imbalanced.jpg "It's remained at about 10% since start of project")
 
-
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/a.jpg "Extracted Features")
 
 
 To solved this problem I created four categories based on the quartiles of the postings with salaries, classed as Q1, Q2, Q3, and Q4.
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/quartiles.jpg "Original Data Split By Quartile")
 
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/a.jpg "Extracted Features")
 
 
-To apply this categorization to the remaining job postings I used sklearn's implementation of [TF-IDF vectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html "Term Frequency-Inverse Document Frequency") to extract the top and bottom 30% of words and phrases associated with each quartile, as features in a new table where each posting is represented by the TF-IDF scores of its terms. For each class this generally produces 90 features but I also added fourteen static binary features determined by the presence, or absence, of any of the top or bottom 30% of terms.
+
+To apply this categorization to the remaining job postings I used sklearn's implementation of [TF-IDF vectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html "Term Frequency-Inverse Document Frequency") to extract the top and bottom 30% of words and phrases associated with each quartile, as features in a new table where each posting is represented by the TF-IDF scores of its terms.
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/Q3words.jpg "Q3 Words")
+
+
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/preprocessedFeatures.jpg "Extracted Features")
+
+For each class this generally produces 90 features but I also added fourteen static binary features determined by the presence, or absence, of any of the top or bottom 30% of terms.
+
+
 
 
 
