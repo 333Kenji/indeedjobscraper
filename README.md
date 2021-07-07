@@ -1,6 +1,11 @@
 ### Project Overview
 The objective of this project is to provide the user with an interactive dashboard allowing for a comprehensive visual and statistical analysis of the data science job market. The data consists of text scraped from every search result for 'data science/scientist' on Indeed.com using the [Requests](https://docs.python-requests.org/en/master/ "Requests Library"), Tor, and [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/ "BeautifulSoup") libraries.
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/scraped.jpg "The Specific HTML Fields We're Gleaning From")
+
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/htmlInspect.jpg "Browser Inspection Shows HTML Structure")
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/response.jpg "The Specific HTML Fields We're Gleaning From")
+
 
 However, only 10% of these job postings contain salary information, severely limiting the scope of analysis. 
 
@@ -64,7 +69,7 @@ Once the data had been cleaned and my features preprocessed or converted I was a
 (with outliers)
 
 For for the latter  I combined two methods, the Z-Score and quartiles in order to build a list of salaries that first fell outside of 3 standard deviations from the mean, and then finding any additional salaries that were 1.5 times greater or less than the upper and lower bounds of the interquartile range respectively. Any job postings with these dollar amounts were then dropped.
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/trimmed.jpg "Trimmed Outliers")
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/trimmedoutliers.jpg "Trimmed Outliers")
 
 
 
