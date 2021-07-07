@@ -2,7 +2,10 @@
 The objective of this project is to provide the user with an interactive dashboard allowing for a comprehensive visual and statistical analysis of the data science job market. The data consists of text scraped from every search result for 'data science/scientist' on Indeed.com using the [Requests](https://docs.python-requests.org/en/master/ "Requests Library"), Tor, and [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/ "BeautifulSoup") libraries.
 
 
+
+
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/htmlInspect.jpg "Browser Inspection Shows HTML Structure")
+
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/response.jpg "The Specific HTML Fields We're Gleaning From")
 
@@ -11,13 +14,16 @@ The objective of this project is to provide the user with an interactive dashboa
 
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/imbalanced.jpg "It's remained at about 10% since start of project")
+
 However, only 10% of these job postings contain salary information, severely limiting the scope of analysis. 
 
 
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/a.jpg "Extracted Features")
+
 
 To solved this problem I created four categories based on the quartiles of the postings with salaries, classed as Q1, Q2, Q3, and Q4.
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/a.jpg "Extracted Features")
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/quartiles.jpg "Original Data Split By Quartile")
+
 
 
 To apply this categorization to the remaining job postings I used sklearn's implementation of [TF-IDF vectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html "Term Frequency-Inverse Document Frequency") to extract the top and bottom 30% of words and phrases associated with each quartile, as features in a new table where each posting is represented by the TF-IDF scores of its terms. For each class this generally produces 90 features but I also added fourteen static binary features determined by the presence, or absence, of any of the top or bottom 30% of terms.
@@ -25,9 +31,17 @@ To apply this categorization to the remaining job postings I used sklearn's impl
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/preprocessedFeatures.jpg "Extracted Features")
 
 
+
 At this point I"ve abstracted my text format data into numerically represented data which is the format reuired by linear regression. However, in order to predict for all four target labels, while also extracting their associated terms and importance scores, I needed to employ a [One-vs-All](https://scikit-learn.org/stable/modules/generated/sklearn.multiclass.OneVsRestClassifier.html "one-vs-all/rest") strategy. In this implementation of that strategy, I iterate over the data using linear regressinon as a binary classifier for each of the quartile classes, taking the highest scoring probability as the likely class to assign each job posting.
 
+
+
+
+
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/b.jpg "Likelihoods")
+
+
+
 Here, 'colmax' represents the most likely class out of all four.
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/d.jpg "Likelihoods")
@@ -73,18 +87,22 @@ The process of reading a web page using python and the BeautifulSoup library was
 A major hurdle in web scraping is doing so undetected. Make too many queries, at a high frequency, and you may very get IP banned for the day, or worse. Like rate limits for APIs (how many queries one can make in a given interval), IP banning is used to limit the traffic a website's server must accommodate. For example, in a distributed denial-of-service attack (DDoS), a website is taken down by directing hundreds or thousands of machines to simultaneously try to access a website, overwhelming its servers and causing it to crash.
 Although web scraping is generally frowned upon since a computer can make thousands of requests every minute a good practice is to play nice and space out the requests a bit. To do this I added a random delay between requests, at a rate of anywhere between 1 and 3 seconds. Additionally, I used the tor library (yes, that tor) t make my PC’s identity in case even my delayed requests were noticed by Indeeds server monitors.
 Because my requests were sometimes for thousands of posts at once, and interruptions and 24hr bans did occur with some frequency, I opted to store the data in .csv format (similar to an excel spreadsheet) so I could have a hard copy in case my web scraping was interrupted.
+
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/scraped.jpg "The Specific HTML Fields We're Gleaning From")
 
 ## Munging / Cleaning the Data
 Since the entirety of my data was in text format, including dates posted and salary information, I had to conduct extensive cleaning and reformating. This step entailed removing unnecessary spaces and characters for most features while isolating and converting salary information given in string format to floating-point values. Dealing with Indeed's date formatting was another tricky area: search results are dated relative to the day of inquiry, which means that the date posted was given as 1-30+ 'days ago'. Fortunately, I was able to convert values in the 'ExtractDate' to date objects from which I simply subtract the number of days given in the 'Post Date' column. This column would be dropped before conducting the machine learning process but attached afterward in order to provide for temporal visual analysis in the application itself.
 While splitting the 'Location' column into 'State' and 'City' features was simple enough Salary' was a challenging column to convert into a useful feature. After dropping special characters and extracting the given rate of pay (hourly, weekly, monthly, yearly) I converted the string representation of the numeric values given as dollar amounts and extrapolated that information with the rate of pay so that the few salaries that were given were at least annualized. This was crucial because Salary is what I use as my target when training the linear regression algorithm.
+
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/munged.jpg "After Cleaning and Sorting Features")
 
 Once the data had been cleaned and my features preprocessed or converted I was able to conduct some exploratory data analysis of the given salaries; laying out their distribution and identifying and dropping outliers as needed. 
+
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/outliers.jpg "With Outliers")
 (with outliers)
 
 For for the latter  I combined two methods, the Z-Score and quartiles in order to build a list of salaries that first fell outside of 3 standard deviations from the mean, and then finding any additional salaries that were 1.5 times greater or less than the upper and lower bounds of the interquartile range respectively. Any job postings with these dollar amounts were then dropped.
+
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/trimmedoutliers.jpg "Trimmed Outliers")
 
 
@@ -94,6 +112,7 @@ For for the latter  I combined two methods, the Z-Score and quartiles in order t
 Since I'd already used ensemble methods like random forests to solve classification challenges in several of my Galvanize projects I decided to work with an algorithm that I'd not yet incorporated into a large project. Logistic regression, which leans on  statistical likelihood as opposed to probability serves as an excellent classifier in this case especially since the weighted importance of term that appears in each posting, relative to their appearance across all postings are given by the
 transformer component of the TfidfVectorizer algorithm as scaled floating-point values.
 The logistic regression model I used incorporated cross-validation which boosts the fidelity of the model's results by providing an average of its performance and is capable of handling mixed data to some extent. I mention this because my final set of features is actually comprised of two tables, the first being the importance of each term as mentioned previously, and the second being a set of binary features that would serve as strong indicators for my classification. For example, if Washinton, NYC, and Texas appear in rows most associated with a particular salary range, and if they appear in a particular posting, the binary feature representing the state would be labeled as 1.0, and 0.0 if not. Depending on the amount of data I had at any given time, the tfid features were many times greater than my set number of 14 binary features; currently they stand at 90+ features, one for each of the most important terms that appear throughout the corpus of job postings.
+
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/preprocessedFeatures.jpg "Extracted Features")
 
 At this point, I needed to make a few design choices for the project. I could very well have conducted linear regression which works for predicting continuous values, i.e. specific dollar amounts. Or, I could have used logistic regression or another classifier that could predict for multiple categories since I was already working towards salary brackets as opposed to dollar amounts. For the purpose of this project, a specific dollar amount is neither relevant nor is it useful. Salary negotiations simply don't start with a dollar amount. Any dollar amount could and should be treated as a starting point indicating an expected range to work with. In the case of using a multi-classifier, I wanted to make sure that I could glean as much information about my data and the algorithm's performance as possible for each salary bracket. In particular, the words associated with each range so they could be conveyed to the user via the app if they chose to use the filters I built into the dashboard.
@@ -109,6 +128,7 @@ To summarize the table, Q serves as the final verdict - the most likely quartile
 
 
 ## Results
+
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/final.jpg "Final")
 Finally, the tables with given and predicted salary ranges were concatenated so the dashboard user could analyze and filter all of the job postings by location, company, salary bracket, and term relevance. Notice that this is our original, cleaned, data but now we have a salary range for every posting.
 
