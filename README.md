@@ -62,14 +62,16 @@ Here's a preview of the [Interactive Tableau Dashboard](indeedwebapp-env.eba-qt8
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/dashboardBott.jpg "Final")
 
+
+
 ---
-Note: For a step-by-step walkthrough of this entire process I recommend checking out the series of notebooks located in the docs folder. These are expanded versions of the same code contained in the application itself but contain all visualizations along wih dynamic statistical explanations drawn directly from the most current dataset.
-Otherwise 
-
-
-
 
 ### Project Description
+Note: For a step-by-step walkthrough of this entire process I recommend checking out the series of notebooks located in the docs folder. These are expanded versions of the same code contained in the application itself but contain all visualizations along wih dynamic statistical explanations drawn directly from the most current dataset.
+
+
+---
+
 
 
 
