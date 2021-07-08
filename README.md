@@ -1,4 +1,4 @@
-### Project Overview
+### Project Summary
 The objective of this project is to provide the user with an interactive dashboard allowing for a comprehensive visual and statistical analysis of the data science job market. The data consists of text scraped from every search result for 'data science/scientist' on Indeed.com using the [Requests](https://docs.python-requests.org/en/master/ "Requests Library"), Tor, and [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/ "BeautifulSoup") libraries.
 
 
@@ -55,22 +55,23 @@ Finally, the tables with given and predicted salary ranges were concatenated so 
 
 
 
-Here's a preview of the [Interactive Tableau Dashboard](indeedwebapp-env.eba-qt8deefm.us-east-2.elasticbeanstalk.com/ "Advanced Job Search") I built using this data, check it out!
+Here's a preview of the [Interactive Tableau Dashboard](indeedwebapp-env.eba-qt8deefm.us-east-2.elasticbeanstalk.com/ "Advanced Job Search") I built as a flask application (app folder) which is deployed to an EC2 instance which automatically reads code updates pushed to my git repository, check it out!
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/dashboardPrev.jpg "Final")
 
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/dashboardBott.jpg "Final")
 
+---
+Note: For a step-by-step walkthrough of this entire process I recommend checking out the series of notebooks located in the docs folder. These are expanded versions of the same code contained in the application itself but contain all visualizations along wih dynamic statistical explanations drawn directly from the most current dataset.
+Otherwise 
 
 
 
 
+### Project Description
 
 
-### Project Summary
-Note: For a step-by-step walkthrough of this entire process I recommend checking out the series of notebooks located in the docs folder. These are expanded versions of the same code contained in the application itself but contain explanatory visuals and dynamic text drawn directly from the most current dataset.
-which is composed as a flask application (app folder) and is deployed to an EC2 instance which automatically reads code updates pushed to my git repository.
 
 ### The Data
 I initially considered using Indeed.com's API for this project since I've made extensive use of APIs in the past as both a student of data science and also for gaining insights into the stock market or certain MMOs whose developers allow their players to access data in real-time. APIs are easy and quick to work with so long as you stay under the rate limit. Unfortunately, the documentation for Indeed's API is rather incomprehensible and due to some recent change on their end might not even be available to the general public. So instead, I chose to try my hand at web scraping which, as it turns out, can be extremely tedious, nuanced, yet rewarding.
