@@ -12,12 +12,11 @@ The objective of this project is to provide the user with an interactive dashboa
 
 
 
-However, only 10% of these job postings contain salary information, severely limiting the scope of analysis. 
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/imbalanced.jpg "It's remained at about 10% since start of project")
+However, only 10% of these job postings contain salary information, severely limiting the scope of analysis with the data as-is.
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/imbalanced.jpg "It's remained at about 10% since start of project") I'll also take this into account when applying scoring metrics.
 
 
-
-To solved this problem I created four categories based on the quartiles of the postings with salaries, classed as Q1, Q2, Q3, and Q4.
+To solved this problem I created four categories based on the quartiles of the postings with salaries, classed as Q1, Q2, Q3, and Q4. Sorting the posts with salaries by the value of that feature, and splitting that series first at the median, then again at the medians adjacent to the median, resulting in four ordered groups in  
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/quartiles.jpg "Original Data Split By Quartile")
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/a.jpg "Extracted Features")
@@ -32,7 +31,7 @@ To apply this categorization to the remaining job postings I used sklearn's impl
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/preprocessedFeatures.jpg "Extracted Features")
 
-For each class this generally produces 90 features but I also added fourteen static binary features determined by the presence, or absence, of any of the top or bottom 30% of terms.
+For each class this generally produces 90 features (terms) but I also added fourteen static binary features determined by the presence, or absence, of any of the top or bottom 30% of terms.
 
 
 
@@ -53,6 +52,8 @@ To summarize the table, Q serves as the final verdict - the most likely quartile
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/final.jpg "Final")
 Finally, the tables with given and predicted salary ranges were concatenated so the dashboard user could analyze and filter all of the job postings by location, company, salary bracket, and term relevance. Notice that this is our original, cleaned, data but now we have a salary range for every posting.
 
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/confusion_roc.jpg "Confusion & ROC for Test sets")
+Overall I'm pleased with the current metrics, despite the dip in correctly labelling Q3 classes. It's also worth noting the strength and similarity of Q1 and Q4. Since this data is inherently imbalanced I'm not too concerned with accuracy as I am about precision and recall, particularly for Q2 and Q3. Also, these classifications will be further refined selecting between the greatest probabilities amongst all 'Q' classes.
 
 
 Here's a preview of the [Interactive Tableau Dashboard](indeedwebapp-env.eba-qt8deefm.us-east-2.elasticbeanstalk.com/ "Advanced Job Search") I built as a flask application (app folder) which is deployed to an EC2 instance which automatically reads code updates pushed to my git repository, check it out!
@@ -67,7 +68,7 @@ Here's a preview of the [Interactive Tableau Dashboard](indeedwebapp-env.eba-qt8
 ---
 
 ### Project Description
-Note: For a step-by-step walkthrough of this entire process I recommend checking out the series of notebooks located in the docs folder. These are expanded versions of the same code contained in the application itself but contain all visualizations along wih dynamic statistical explanations drawn directly from the most current dataset.
+Below you will find an in-depth guide to this project, howver I do recommend the jupyter notebooks located in the docs folder. These are expanded versions of the same code contained in the application itself but contain all visualizations along wih dynamic statistical explanations drawn directly from the most recent scraping.
 
 
 ---
@@ -85,7 +86,7 @@ The process of reading a web page using python and the BeautifulSoup library was
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/response.jpg "The Specific HTML Fields We're Gleaning From")
 
-A major hurdle in web scraping is doing so undetected. Make too many queries, at a high frequency, and you may very get IP banned for the day, or worse. Like rate limits for APIs (how many queries one can make in a given interval), IP banning is used to limit the traffic a website's server must accommodate. For example, in a distributed denial-of-service attack (DDoS), a website is taken down by directing hundreds or thousands of machines to simultaneously try to access a website, overwhelming its servers and causing it to crash.
+A major hurdle in web scraping is doing so undetected. Make too many queries, at a high frequency, and you may very well get IP banned for the day, or worse. Like rate limits for APIs (how many queries one can make in a given interval), IP banning is used to limit the traffic a website's server must accommodate. For example, in a distributed denial-of-service attack (DDoS), a website is taken down by directing hundreds or thousands of machines to simultaneously try to access a website, overwhelming its servers and causing it to crash.
 Although web scraping is generally frowned upon since a computer can make thousands of requests every minute a good practice is to play nice and space out the requests a bit. To do this I added a random delay between requests, at a rate of anywhere between 1 and 3 seconds. Additionally, I used the tor library (yes, that tor) t make my PC’s identity in case even my delayed requests were noticed by Indeeds server monitors.
 Because my requests were sometimes for thousands of posts at once, and interruptions and 24hr bans did occur with some frequency, I opted to store the data in .csv format (similar to an excel spreadsheet) so I could have a hard copy in case my web scraping was interrupted.
 
