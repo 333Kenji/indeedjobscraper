@@ -13,7 +13,10 @@ The objective of this project is to provide the user with an interactive dashboa
 
 
 However, only 10% of these job postings contain salary information, severely limiting the scope of analysis with the data as-is.
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/imbalanced.jpg "It's remained at about 10% since start of project") I'll also take this into account when applying scoring metrics.
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/imbalanced.jpg "It's remained at about 10% since start of project")
+
+'ll also take this into account when applying scoring metrics.
 
 
 To solved this problem I created four categories based on the quartiles of the postings with salaries, classed as Q1, Q2, Q3, and Q4. Sorting the posts with salaries by the value of that feature, and splitting that series first at the median, then again at the medians adjacent to the median, resulting in four ordered groups in  
