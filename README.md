@@ -16,7 +16,7 @@ However, only 10% of these job postings contain salary information, severely lim
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/imbalanced.jpg "It's remained at about 10% since start of project")
 
-'ll also take this into account when applying scoring metrics.
+I'll also take this into account when applying scoring metrics.
 
 
 To solved this problem I created four categories based on the quartiles of the postings with salaries, classed as Q1, Q2, Q3, and Q4. Sorting the posts with salaries by the value of that feature, and splitting that series first at the median, then again at the medians adjacent to the median, resulting in four ordered groups in  

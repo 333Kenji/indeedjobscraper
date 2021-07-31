@@ -185,3 +185,9 @@ webscraper_orig2.ipynb
 viz.py
 viz.ipynb
 viz2.ipynb
+data/
+presh.csv
+graph_ready.csv
+total.csv
+ml.csv
+munged_data.csv
