@@ -122,9 +122,3 @@ def main(position, location):
         writer = csv.writer(f)
         writer.writerow(['JobTitle', 'Company', 'Location', 'PostDate', 'ExtractDate', 'Summary', 'Pay', 'JobUrl', 'Requirements', 'Description'])
         writer.writerows(data)
-
-        
-        
-        Good afternnon,
-        
-        I sincerely apologze but unfortunately I've had to leave the state this weekend. Thank you so very much or your time and consideration.
