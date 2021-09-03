@@ -1,9 +1,11 @@
-### Project Description
-After graduating from Galvanize's Data Science bootcamp I immediately wanted to build a relevant and useful data science application in order to apply what I'd learned to to solve a real-world problem. At this time, the greatest challenge faced by my fellow alums and I was, of course, finding a job. Part of that process involves searching through and filtering job postings based on their descriptions, requirements, responsibilities, location, and of course potential salary. Unfortunately job listing sites like Indeed.com, despite possessing some advanced search functionality, often place their job market analytics behind a premium membership or paywall. Additionally, most employers do not include salary information in their job descriptions. In fact, through my analysis I found that only 10% of Indeed.com search results for 'data scientist' contain any salary information and without that metric it becomes increasigly difficult to not only filter and compare postings to conduct a broad analysis of this paticular job market.
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/dashboardPrev.jpg "Final")
 
 
+### Project Description
+After graduating from Galvanize's Data Science bootcamp I immediately wanted to build a relevant and useful data science application in order to apply what I'd learned to to solve a real-world problem. At this time, the greatest challenge faced by my fellow alums and I was, of course, finding a job. Part of that process involves searching through and filtering job postings based on their descriptions, requirements, responsibilities, location, and of course potential salary. Unfortunately job listing sites like Indeed.com, despite possessing some advanced search functionality, often place their job market analytics behind a premium membership or paywall. Additionally, most employers do not include salary information in their job descriptions. In fact, through my analysis I found that only 10% of Indeed.com search results for 'data scientist' contain any salary information and without that metric it becomes increasigly difficult to not only filter and compare postings to conduct a broad analysis of this paticular job market.
+
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/dashboardBott.jpg "Final")
+
 
 ### Project Summary
 The primary objective of this project is to create a comprehensive 'Data Science Job Market' dashboard in Tableau for visual and statistical analysis conducted by job seekers and recruiters alike. However, in order to accomplish this I must first provide some sort of salary data for the 90% of records missing that information.
