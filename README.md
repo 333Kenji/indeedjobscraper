@@ -1,25 +1,62 @@
+### Project Description
+After graduating from Galvanize's Data Science bootcamp I immediately wanted to build a relevant and useful data science application in order to apply what I'd learned to to solve a real-world problem. At this time, the greatest challenge faced by my fellow alums and I was, of course, finding a job. Part of that process involves searching through and filtering job postings based on their descriptions, requirements, responsibilities, location, and of course potential salary. Unfortunately job listing sites like Indeed.com, despite possessing some advanced search functionality, often place their job market analytics behind a premium membership or paywall. Additionally, most employers do not include salary information in their job descriptions. In fact, through my analysis I found that only 10% of Indeed.com search results for 'data scientist' contain any salary information and without that metric it becomes increasigly difficult to not only filter and compare postings to conduct a broad analysis of this paticulr job market.
+
+
 ### Project Summary
-The objective of this project is to provide the user with an interactive dashboard allowing for a comprehensive visual and statistical analysis of the data science job market. The data consists of text scraped from every search result for 'data science/scientist' on Indeed.com using the [Requests](https://docs.python-requests.org/en/master/ "Requests Library"), Tor, and [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/ "BeautifulSoup") libraries.
+The primary objective of this project is to create a comprehensive 'Data Science Job Market' dashboard in Tableau for visual and statistical analysis conducted by job seekers and recruiters alike. However, in order to accomplish this I must first provide some sort of salary data for the 90% of records missing that information.
+Using Natural Language Processing I transform the information found in job postings web scraped from Indeed.com since April 2021 into a dataset that, using multivariate logistic regression, can be used to generate models capable of providing accurate probabilties for each of four salary ranges representing the quartiles observed in the range of observed salaries (The 10% of records that do include salary information). The range with the greatest likelihood is then assigned as that record's classification, (posts with salaries are automatically classed) ensuring that 100% of the records contain salary data.
 
 
+### The Data
+The data consists of text scraped from every search result for 'data science/scientist' on Indeed.com using the [Requests](https://docs.python-requests.org/en/master/ "Requests Library"), Tor, and [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/ "BeautifulSoup") libraries since mid-April, 2021.
 
+Initially, I'd considered using Indeed.com's API for this project since I've made extensive use of APIs in the past as both a student of data science and also for gaining insights into the stock market and an MMO whose developers allow their players to access data in real-time. APIs are easy and quick to work with so long as you stay under the rate limit. Unfortunately, the documentation for Indeed's API is rather incomprehensible and due to some recent change on their end might not even be available to the general public. So instead, I chose to try my hand at web scraping which, as it turns out, can be extremely tedious, nuanced, yet highly rewarding due to the sbility to surgically extract desired data.
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/htmlInspect.jpg "Browser Inspection Shows HTML Structure")
+
+The process of reading a web page using python and the BeautifulSoup library was a straightforward one. A template web address is passed through the internet as a get request and in return, one receives the full HTML of the targeted page. By scanning the HTML for particular fields like 'Job Title', 'Post Date', and 'Summary' I was able to build a table of 5000+ rows of data represented by a total of ten initial features.
 
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/response.jpg "The Specific HTML Fields We're Gleaning From")
 
+A major hurdle in web scraping is doing so undetected. Make too many queries, at a high frequency, and you may very well get IP banned for the day, or worse. As with rate limits for APIs (how many queries one can make in a given interval), IP banning is used to limit the traffic a website's server must accommodate. For example, in a distributed denial-of-service attack (DDoS), a website is taken down by directing hundreds or thousands of machines to simultaneously try to access a website, overwhelming its servers and causing it to crash.
+Although web scraping is generally frowned upon because a single computer can make thousands of requests every minute, a good practice is to play nice and space out the requests a bit. To do this I added a random delay between requests, at a rate of anywhere between 1 and 3 seconds. Additionally, I used the tor library (yes, that tor) to mask my PC’s identity in case even my delayed requests were noticed by Indeed's server monitors. And even so! In order to keep my data up to date I also employ a VPN to shift my IP around whenever it's blocked.
+Because my requests were sometimes for thousands of posts at once, and interruptions and 24hr bans did occur with some frequency, I opted to store the data in .csv format (similar to an excel spreadsheet) so I could have a "hard copy" in case my web scraping was interrupted.
 
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/scraped.jpg "The Specific HTML Fields We're Gleaning From")
 
 
 However, only 10% of these job postings contain salary information, severely limiting the scope of analysis with the data as-is.
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/imbalanced.jpg "It's remained at about 10% since start of project")
 
-I'll also take this into account when applying scoring metrics.
+I'll also take this into account when applying scoring metrics and will go into further detail in the model evaluation section below.
 
 
-To solved this problem I created four categories based on the quartiles of the postings with salaries, classed as Q1, Q2, Q3, and Q4. Sorting the posts with salaries by the value of that feature, and splitting that series first at the median, then again at the medians adjacent to the median, resulting in four ordered groups in  
+## Munging / Cleaning the Data
+Since the entirety of my data was in text format, including dates posted and salary information, I had to conduct extensive cleaning and reformating. This step entailed removing unnecessary spaces and characters for most features while isolating and converting salary information given in string format to floating-point values.
+Dealing with Indeed's date formatting was another tricky area: search results are dated relative to the day of inquiry, which means that the date posted was given as 1-30+ 'days ago'. Fortunately, I was able to convert values in the 'ExtractDate' to date objects from which I simply subtract the number of days given in the 'Post Date' column. This column would be dropped before conducting the machine learning process but attached afterward in order to provide for temporal visual analysis in the application itself.
+While splitting the 'Location' column into 'State' and 'City' features was simple enough, Salary' was a challenging column to convert into a useful feature. After dropping special characters and extracting the given rate of pay (hourly, weekly, monthly, yearly) I converted the string representation of the numeric values given as dollar amounts and extrapolated that information with the rate of pay so that the few salaries that were given were at least annualized. This was crucial because Salary is what I use as my target when training the linear regression algorithm for class (quartile range).
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/munged.jpg "After Cleaning and Sorting Features")
+
+Once the data had been cleaned and my features preprocessed or converted I was able to conduct some exploratory data analysis of the given salaries; laying out their distribution and identifying and dropping outliers as needed. 
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/outliers.jpg "With Outliers")
+(with outliers)
+
+For for the latter I combined two methods, the Z-Score and quartiles in order to build a list of salaries that first fell outside of 3 standard deviations from the mean, and then finding any additional salaries that were 1.5 times greater or less than the upper and lower bounds of the interquartile range respectively. Any job postings with these dollar amounts were then dropped.
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/trimmedoutliers.jpg "Trimmed Outliers")
+
+
+
+
+
+
+
+
+To solved this problem I created four classes based on the quartiles of those postings with salaries, classed as Q1, Q2, Q3, and Q4. Sorting the posts with salaries by the value of that feature, and splitting that series first at the median, then again at the medians adjacent to the median, resulting in four ordered groups in  
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/quartiles.jpg "Original Data Split By Quartile")
 
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/a.jpg "Extracted Features")
@@ -35,8 +72,6 @@ To apply this categorization to the remaining job postings I used sklearn's impl
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/preprocessedFeatures.jpg "Extracted Features")
 
 For each class this generally produces 90 features (terms) but I also added fourteen static binary features determined by the presence, or absence, of any of the top or bottom 30% of terms.
-
-
 
 
 At this point I've abstracted the text-based data into numerically represented data which is the format required for linear regression. However, in order to predict for all four target labels, while also extracting their associated terms and importance scores, I needed to employ a [One-vs-All](https://scikit-learn.org/stable/modules/generated/sklearn.multiclass.OneVsRestClassifier.html "one-vs-all/rest") strategy. In this implementation of that strategy, I iterate over the data using linear regressinon as a binary classifier for each of the quartile classes, taking the highest scoring probability as the likely class to assign each job posting.
@@ -67,6 +102,32 @@ Here's a preview of the [Interactive Tableau Dashboard](indeedwebapp-env.eba-qt8
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/dashboardBott.jpg "Final")
 
 
+Project Rundown
+
+Project Breakdown
+
+- The Data
+- Cleaning
+- EDA
+- Feature Engineering
+- ML
+    - Which Approach?
+    - Which Target?
+    - Which Algorithm?
+    - Which Evaluation Metric?
+    - Test-Train Split
+    - Model Selection
+    - Hyperparameter Tuning
+    - Model Instantiation
+    - Model Fitting
+    - Model Testing
+    - Model Training
+    - Hyperparameter Tuning
+    - Model Evaluation
+Model Deployment/Project Deployment
+
+
+
 
 ---
 
@@ -80,35 +141,9 @@ Below you will find an in-depth guide to this project, howver I do recommend the
 
 
 ### The Data
-I initially considered using Indeed.com's API for this project since I've made extensive use of APIs in the past as both a student of data science and also for gaining insights into the stock market or certain MMOs whose developers allow their players to access data in real-time. APIs are easy and quick to work with so long as you stay under the rate limit. Unfortunately, the documentation for Indeed's API is rather incomprehensible and due to some recent change on their end might not even be available to the general public. So instead, I chose to try my hand at web scraping which, as it turns out, can be extremely tedious, nuanced, yet rewarding.
-
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/htmlInspect.jpg "Browser Inspection Shows HTML Structure")
-
-The process of reading a web page using python and the BeautifulSoup library was a straightforward one. A template web address is passed through the internet as a get request and in return, one receives the full HTML of the targeted page. By scanning the HTML for particular fields like 'Job Title', 'Post Date', and 'Summary' I was able to build a table of 5000+ rows of data represented by a total of ten initial features.
 
 
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/response.jpg "The Specific HTML Fields We're Gleaning From")
 
-A major hurdle in web scraping is doing so undetected. Make too many queries, at a high frequency, and you may very well get IP banned for the day, or worse. Like rate limits for APIs (how many queries one can make in a given interval), IP banning is used to limit the traffic a website's server must accommodate. For example, in a distributed denial-of-service attack (DDoS), a website is taken down by directing hundreds or thousands of machines to simultaneously try to access a website, overwhelming its servers and causing it to crash.
-Although web scraping is generally frowned upon since a computer can make thousands of requests every minute a good practice is to play nice and space out the requests a bit. To do this I added a random delay between requests, at a rate of anywhere between 1 and 3 seconds. Additionally, I used the tor library (yes, that tor) t make my PC’s identity in case even my delayed requests were noticed by Indeeds server monitors.
-Because my requests were sometimes for thousands of posts at once, and interruptions and 24hr bans did occur with some frequency, I opted to store the data in .csv format (similar to an excel spreadsheet) so I could have a hard copy in case my web scraping was interrupted.
-
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/scraped.jpg "The Specific HTML Fields We're Gleaning From")
-
-## Munging / Cleaning the Data
-Since the entirety of my data was in text format, including dates posted and salary information, I had to conduct extensive cleaning and reformating. This step entailed removing unnecessary spaces and characters for most features while isolating and converting salary information given in string format to floating-point values. Dealing with Indeed's date formatting was another tricky area: search results are dated relative to the day of inquiry, which means that the date posted was given as 1-30+ 'days ago'. Fortunately, I was able to convert values in the 'ExtractDate' to date objects from which I simply subtract the number of days given in the 'Post Date' column. This column would be dropped before conducting the machine learning process but attached afterward in order to provide for temporal visual analysis in the application itself.
-While splitting the 'Location' column into 'State' and 'City' features was simple enough Salary' was a challenging column to convert into a useful feature. After dropping special characters and extracting the given rate of pay (hourly, weekly, monthly, yearly) I converted the string representation of the numeric values given as dollar amounts and extrapolated that information with the rate of pay so that the few salaries that were given were at least annualized. This was crucial because Salary is what I use as my target when training the linear regression algorithm.
-
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/munged.jpg "After Cleaning and Sorting Features")
-
-Once the data had been cleaned and my features preprocessed or converted I was able to conduct some exploratory data analysis of the given salaries; laying out their distribution and identifying and dropping outliers as needed. 
-
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/outliers.jpg "With Outliers")
-(with outliers)
-
-For for the latter  I combined two methods, the Z-Score and quartiles in order to build a list of salaries that first fell outside of 3 standard deviations from the mean, and then finding any additional salaries that were 1.5 times greater or less than the upper and lower bounds of the interquartile range respectively. Any job postings with these dollar amounts were then dropped.
-
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/trimmedoutliers.jpg "Trimmed Outliers")
 
 
 
