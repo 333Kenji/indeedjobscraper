@@ -1,6 +1,143 @@
 ![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/dashboardPrev.jpg "Final")
 
+# Multi-Label Linear Regression on Indeed Salaries
 
+This project is an overhaul of a major project I'd completed last year before Indeed.com started including salary estimates for the majority of job postings that didn't include that informaton form the employer. I'm revisiting the project because it presents a set of challenges: webscrapping Indeed.com, extensive data wrangling, natural language processing, and an approach to multi-label classification using multiple models.
+
+??? data.head() img
+
+## Authors
+
+- Kenji Alford [GIT](https://www.github.com/333kenji)
+
+??? Embiggen (or not)
+<!-- TABLE OF CONTENTS -->
+<details>
+    
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+
+---
+??? Linky
+The notebook(s) for this project can be found here.
+
+
+## Motivations
+
+Project introduction.
+I originally conceived this project a year ago, when I and my cohort in the Galvanize data science bootcamp were about to enter the job market as freshers. At that time a major concern of ours was how to determine a job's potential salary based on such factors as required skills and profiencies, location, and description.
+The problem.
+- Unfortunately, at that time, only 10% or so of data science roles listed on Indeed.com provided a salary. Thus, we had very small samples from which to discern a wide and evolving range of salaries.
+Goals: Business Objectives
+- The business objective of this project continues to be the successful implementation of multi-label classification to provide salary ranges for data that have not been provided these values either by the emplyer or through Indeed.coms estimates.
+Goals: Project Objectives
+- Reinforcing particular skills and intuition by tackling data scraping and wrangling, NLP, and multi-label classification.
+The Solution
+- How this project solves the problem.
+- Evaluation Metrics. (if the model can predict with 99% accuracy...)
+- Minimum viable product.
+    - An accurate classifier.
+
+
+---
+## Methodologies
+### Methods Employed
+- Machine Learning
+    - I originally chose logistic regression because I wanted a binary answer to wether or not a particular job could be predicted to be above or below the median salary seen in similar observations.
+    - Through further investigation of the target's descriptive statitics I eventually divided the observed range of salaries into quartiles, fitting a classifier to each, and instead of going with binary outcomes, compared the probabilistic outcomes, selecting the highest as the most likely and thus selected that probability's associated class as the final classification.
+- NLP
+    - Parsing each postings HTML and Javascript into features buiolt a table whose values were primarily in string format. While feture like location could be split into city/state features and then encoded for analysis along their descriptive statistics, the summaries and descriptions of each job posting required a full application of natural language processing.
+- Data Visualization
+- Predictive Modeling
+- etc.
+## Libraries and Technologies
+- Python
+- Numpy, Pandas
+- Scikit-learn
+- Jupyter, VSCde
+
+---
+## Project Description
+### Technical Aspect
+This project is broken ito two parts.
+1. stages of what you’re doing
+2. can be broken down
+    1. into
+    2. a tree
+ ### Experimental Design
+ - target
+ - the control/test split
+ - the validation set
+ - ML algorithm stack
+ ### The Data
+
+Description of Data Acquisition
+Date of collection
+Description of each data source
+- Source
+How Sources May Be Related
+Variables Directory
+- column headings
+- types
+- number of variables
+- units of measurement
+- Definition of missing data
+Directory Tree
+Description of Methods of Data Processing
+- Wrangling
+- Transformation
+- Encoding
+- Scaling
+
+---
+## Summary
+### Noteworthy Findings w/Graphics
+- this
+- that
+- and another thing
+
+
+Information About Model
+Model Evaluation
+    - [Model Card](https://arxiv.org/pdf/1810.03993.pdf)
+Predictions
+Real World Applications
+
+---
+<!-- ROADMAP -->
+## Roadmap
+
+- [x] Add Changelog
+- [x] Add back to top links
+- [ ] Add Additional Templates w/ Examples
+- [ ] Add "components" document to easily copy & paste sections of the readme
+- [ ] Multi-language Support
+    - [ ] Chinese
+    - [ ] Spanish
+All Below This Line From Prior Iterations. Retaining For The Moment.
+---
 ### Project Background
 After graduating from Galvanize's Data Science bootcamp I immediately sought to build a relevant and useful data science application in order to apply what I'd learned to solve a real-world problem. At that time, the greatest challenge faced by my fellow alums and I was, of course, finding a job. Part of that process involves searching through and filtering job postings based on their descriptions, requirements, responsibilities, location, and of course, potential salary. Unfortunately job listing sites like Indeed.com, despite possessing some advanced search functionality, often place their job market analytics behind a premium membership or paywall. Additionally, most employers do not include salary information in their job descriptions. In fact, through my analysis I found that only 10% of Indeed.com search results for 'data scientist' contain any salary information and without that metric it is difficult to both compare jobs and conduct an analysis of this paticular job market.
 
