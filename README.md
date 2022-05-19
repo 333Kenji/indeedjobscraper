@@ -2,6 +2,8 @@
 
 # Multi-Label Linear Regression on Indeed Salaries
 
+The goal of this project is to conduct linear regression to predict the missing salaries of job postings webscrapped from Indeed.com.
+
 This project is an overhaul of a major project I'd completed last year before Indeed.com started including salary estimates for the majority of job postings that didn't include that informaton form the employer. I'm revisiting the project because it presents a set of challenges: webscrapping Indeed.com, extensive data wrangling, natural language processing, and an approach to multi-label classification using multiple models.
 
 ??? data.head() img
