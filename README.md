@@ -12,34 +12,42 @@ This project is an overhaul of a major project I'd completed last year before In
 
 - Kenji Alford [GIT](https://www.github.com/333kenji)
 
-??? Embiggen (or not)
-<!-- TABLE OF CONTENTS -->
-<details>
-    
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
+##### Data Dictionary
+- company<br>
+&nbsp;
+&nbsp;name of company
+- description<br>
+&nbsp;full text description of job
+- estimated_salary<br>
+&nbsp;Indeed's salary estimation
+- extractDate<br>
+&nbsp;String(?), date record was webscrapped
+- job_type_items<br>
+&nbsp;formatted list of 'full-time', 'part-time', etc
+- location<br>
+&nbsp;state and city/remote
+- postDate<br>
+&nbsp;date job posting was created
+- rating<br>
+&nbsp;Indeed.com ascribed company ratings
+- raw_desc_soup<br>
+&nbsp;raw full description, retained for possible future use/analysis
+- requirements<br>
+&nbsp;employer-listed educational, aptitude, and experience requirements
+- sal_guide_items<br>
+&nbsp;formatted list containing redundant characters and the Indeed salary estimate
+- salary<br>
+&nbsp;if given by employer
+- salary_and_jType<br>
+&nbsp;formatted list combining salary from salfromsection and job_type_items
+- salfromsection<br>
+&nbsp;salary, if given, extracted from job description
+- summary<br>
+&nbsp;brief summaries of each job extracted from sach results
+- title<br>
+&nbsp;job position title
+- url<br>
+&nbsp;job posting/description address
 
 ---
 ??? Linky
