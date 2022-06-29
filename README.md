@@ -50,8 +50,7 @@ This project is an overhaul of a major project I'd completed last year before In
 &nbsp;job posting/description address
 
 ---
-??? Linky
-The notebook(s) for this project can be found here.
+
 
 
 ## Motivations
