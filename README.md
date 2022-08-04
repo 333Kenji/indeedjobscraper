@@ -3,32 +3,39 @@
 # Multi-Class Linear Regression on Indeed Salaries
 
 ## Introduction
-The goal of this project is to conduct linear regression to predict the missing salaries of job postings webscrapped from Indeed.com.
+This project is an overhaul of a major project I'd completed last year before Indeed.com started including salary estimates for the most of job postings that didn't have that information.
 
-This project is an overhaul of a major project I'd completed last year before Indeed.com started including salary estimates for the majority of job postings that didn't include that informaton form the employer. I'm revisiting the project because it presents a set of challenges: webscrapping Indeed.com, extensive data wrangling, natural language processing, and an approach to multi-label classification using multiple models.
+In this most recent version, I conduct linear regression to predict the salary ranges for job postings that I've webscraped from Indeed.com
 
-Below you will find an in-depth guide to this project, howver I do recommend the jupyter notebooks located in the docs folder. These are expanded versions of the same code contained in the application itself but contain all visualizations along wih dynamic statistical explanations drawn directly from the most recent scraping.
+I'm revisiting the project because it presents a set of challenges: webscrapping, extensive data wrangling, natural language processing, and multi-label classification employing multiple models.
+
+Below you will find an in-depth guide to this project, however, I do recommend the jupyter notebooks located in the docs folder. These expanded versions ~~have the same code contained in the application itself but~~ provide all visualizations along with dynamic statistical explanations drawn directly from the most recent scraping.
+
 ## Project Summary
-The primary objective of this project is to create an interactive 'Data Science Job Market' dashboard in Tableau for visual and statistical analysis conducted by job seekers and recruiters alike. However, in order to accomplish this I must first provide some sort of salary data for the 90% of records missing that information. Using Natural Language Processing I transform the information found in job postings web scraped from Indeed.com since April 2021 into a dataset that, using multivariate logistic regression, can be used to generate models capable of providing accurate probabilties for each of four salary ranges representing the quartiles observed in the range of observed salaries (The 10% of records that do include salary information). The range with the greatest likelihood is then assigned as that record's classification, (posts with salaries are automatically classed) ensuring that 100% of the records contain salary data.
 
-Since I'd already used ensemble methods like random forests to solve classification challenges in several of my Galvanize projects I decided to work with an algorithm that I'd not yet incorporated into a large project. Logistic regression, which leans on  statistical likelihood as opposed to probability serves as an excellent classifier in this case especially since the weighted importance of term that appears in each posting, relative to their appearance across all postings are given by the
-transformer component of the TfidfVectorizer algorithm as scaled floating-point values.
-The logistic regression model I used incorporated cross-validation which boosts the fidelity of the model's results by providing an average of its performance and is capable of handling mixed data to some extent. I mention this because my final set of features is actually comprised of two tables, the first being the importance of each term as mentioned previously, and the second being a set of binary features that would serve as strong indicators for my classification. For example, if Washinton, NYC, and Texas appear in rows most associated with a particular salary range, and if they appear in a particular posting, the binary feature representing the state would be labeled as 1.0, and 0.0 if not. Depending on the amount of data I had at any given time, the tfid features were many times greater than my set number of 14 binary features; currently they stand at 90+ features, one for each of the most important terms that appear throughout the corpus of job postings.
+The overall objective of this project is to create an interactive 'Data Science Job Market' dashboard in Tableau for the visual and statistical analysis conducted by job seekers and recruiters alike.
+#insert image of the dashboard
+<br>
+The webscrapped dataset comprises a robust feature set; containing numeric, categorical, and string values. Employing the appropriate approaches to each feature type, I wrangle, engineer, analyze, and transform each before moving on to bi and multivariate feature analysis.
+Considering the user, there are several outputs I'd like this product to provide; trend analysis, most common states or key skills/terms, and perhaps most importantly - salary.
+<br>
+I've observed, over the past year working with this data source that only 10-20% of job posts have a salary attached. However, in the time since I started the project, Indeed.com has begun to include salary estimates derived using similar methods found in this project.
+<br>
+I'm combining this addition of 40-60% of salary values with those provided by employers - they're all estimates.
+Since this is an exploration of multi-class classification I take the quartile ranges of all the observed (estimated and given) salaries and assign each data point to a target value corresponding to the range (positive class) the salary falls within.
+<br>
+Optimal preprocessing and model hyperparameters needed for each target (quartile/positive class) /model are developed using a combination of GridSearchCV and pipelines from sklearn. These settings are then transferred to a new pipeline where I train, test, and evaluate each model before extracting the probabilistic outputs underlying the otherwise binary classifications for each class. To arrive at the final prediction I compare the probabilities for each model's prediction and select the class with the strongest probability.
 
-![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/preprocessedFeatures.jpg "Extracted Features")
-
-At this point, I needed to make a few design choices for the project. I could very well have conducted linear regression which works for predicting continuous values, i.e. specific dollar amounts. Or, I could have used logistic regression or another classifier that could predict for multiple categories since I was already working towards salary brackets as opposed to dollar amounts. For the purpose of this project, a specific dollar amount is neither relevant nor is it useful. Salary negotiations simply don't start with a dollar amount. Any dollar amount could and should be treated as a starting point indicating an expected range to work with. In the case of using a multi-classifier, I wanted to make sure that I could glean as much information about my data and the algorithm's performance as possible for each salary bracket. In particular, the words associated with each range so they could be conveyed to the user via the app if they chose to use the filters I built into the dashboard.
-
-To accomplish this, I actually conduct linear regression several times by building a target variable for each salary bracket and in each iteration calling that particular column as the dependent variable. Also, to expand upon this project in the future I wrapped the entire process of splitting, featurization (binary and tf-idf), a dummy test, and even a decision tree classifier to distill the most important terms even further into a single function that can incorporate new data as I continue to expand this collection of 5000+ rows of data in the coming months. The algorithms used are isolated and discarded after each iteration and will perform better as I add to my collection of scrapped data.
 
 ## Project Background
+
+I originally conceived this project a year ago, when I and my cohort in the Galvanize data science bootcamp were about to enter the job market as freshers. At that time a major concern of ours was how to determine a job's potential salary based on such factors as required skills and profiencies, location, and description.
+
 After graduating from Galvanize's Data Science bootcamp I immediately sought to build a relevant and useful data science application in order to apply what I'd learned to solve a real-world problem. At that time, the greatest challenge faced by my fellow alums and I was, of course, finding a job. Part of that process involves searching through and filtering job postings based on their descriptions, requirements, responsibilities, location, and of course, potential salary. Unfortunately job listing sites like Indeed.com, despite possessing some advanced search functionality, often place their job market analytics behind a premium membership or paywall. Additionally, most employers do not include salary information in their job descriptions. In fact, through my analysis I found that only 10% of Indeed.com search results for 'data scientist' contain any salary information and without that metric it is difficult to both compare jobs and conduct an analysis of this paticular job market.
 
 
 # Major Challenges
-Project introduction.
-I originally conceived this project a year ago, when I and my cohort in the Galvanize data science bootcamp were about to enter the job market as freshers. At that time a major concern of ours was how to determine a job's potential salary based on such factors as required skills and profiencies, location, and description.
-The problem.
+
 - Unfortunately, at that time, only 10% or so of data science roles listed on Indeed.com provided a salary. Thus, we had very small samples from which to discern a wide and evolving range of salaries.
 Goals: Business Objectives
 - The business objective of this project continues to be the successful implementation of multi-label classification to provide salary ranges for data that have not been provided these values either by the emplyer or through Indeed.coms estimates.
@@ -45,6 +52,16 @@ The Solution
 - Scikit-learn
 - Jupyter, VSCde
 # Methods
+
+
+Using multivariate logistic regression can be used to generate models capable of providing accurate probabilities for each of four salary ranges representing the quartiles observed in the range of observed salaries (The 10% of records that do include salary information). The range with the greatest likelihood is then assigned as that record's classification, (posts with salaries are automatically classed) ensuring that 100% of the records contain salary data.
+
+
+
+
+To accomplish this, I must first provide some sort of salary data for the 90% of records missing that information. Using Natural Language Processing I transform the information found in job postings web scraped from Indeed.com into a dataset.
+
+
 - Machine Learning
     - I originally chose logistic regression because I wanted a binary answer to wether or not a particular job could be predicted to be above or below the median salary seen in similar observations.
     - Through further investigation of the target's descriptive statitics I eventually divided the observed range of salaries into quartiles, fitting a classifier to each, and instead of going with binary outcomes, compared the probabilistic outcomes, selecting the highest as the most likely and thus selected that probability's associated class as the final classification.
@@ -56,6 +73,16 @@ The Solution
 
 
 # Model
+Since I'd already used ensemble methods like random forests to solve classification challenges in several of my Galvanize projects I decided to work with an algorithm that I'd not yet incorporated into a large project. Logistic regression, which leans on  statistical likelihood as opposed to probability serves as an excellent classifier in this case especially since the weighted importance of term that appears in each posting, relative to their appearance across all postings are given by the
+transformer component of the TfidfVectorizer algorithm as scaled floating-point values.
+The logistic regression model I used incorporated cross-validation which boosts the fidelity of the model's results by providing an average of its performance and is capable of handling mixed data to some extent. I mention this because my final set of features is actually comprised of two tables, the first being the importance of each term as mentioned previously, and the second being a set of binary features that would serve as strong indicators for my classification. For example, if Washinton, NYC, and Texas appear in rows most associated with a particular salary range, and if they appear in a particular posting, the binary feature representing the state would be labeled as 1.0, and 0.0 if not. Depending on the amount of data I had at any given time, the tfid features were many times greater than my set number of 14 binary features; currently they stand at 90+ features, one for each of the most important terms that appear throughout the corpus of job postings.
+
+![alt text](https://github.com/333Kenji/Machine-Learning-Indeed-Search/blob/main/app/static/images/preprocessedFeatures.jpg "Extracted Features")
+
+At this point, I needed to make a few design choices for the project. I could very well have conducted linear regression which works for predicting continuous values, i.e. specific dollar amounts. Or, I could have used logistic regression or another classifier that could predict for multiple categories since I was already working towards salary brackets as opposed to dollar amounts. For the purpose of this project, a specific dollar amount is neither relevant nor is it useful. Salary negotiations simply don't start with a dollar amount. Any dollar amount could and should be treated as a starting point indicating an expected range to work with. In the case of using a multi-classifier, I wanted to make sure that I could glean as much information about my data and the algorithm's performance as possible for each salary bracket. In particular, the words associated with each range so they could be conveyed to the user via the app if they chose to use the filters I built into the dashboard.
+
+To accomplish this, I actually conduct linear regression several times by building a target variable for each salary bracket and in each iteration calling that particular column as the dependent variable. Also, to expand upon this project in the future I wrapped the entire process of splitting, featurization (binary and tf-idf), a dummy test, and even a decision tree classifier to distill the most important terms even further into a single function that can incorporate new data as I continue to expand this collection of 5000+ rows of data in the coming months. The algorithms used are isolated and discarded after each iteration and will perform better as I add to my collection of scrapped data.
+
 # Metrics
 
 # Project Description
