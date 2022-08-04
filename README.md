@@ -15,15 +15,15 @@ Below you will find an in-depth guide to this project, however, I do recommend t
 
 The overall objective of this project is to create an interactive 'Data Science Job Market' dashboard in Tableau for the visual and statistical analysis conducted by job seekers and recruiters alike.
 #insert image of the dashboard
-<br>
+<br><br>
 The webscrapped dataset comprises a robust feature set; containing numeric, categorical, and string values. Employing the appropriate approaches to each feature type, I wrangle, engineer, analyze, and transform each before moving on to bi and multivariate feature analysis.
 Considering the user, there are several outputs I'd like this product to provide; trend analysis, most common states or key skills/terms, and perhaps most importantly - salary.
-<br>
+<br><br>
 I've observed, over the past year working with this data source that only 10-20% of job posts have a salary attached. However, in the time since I started the project, Indeed.com has begun to include salary estimates derived using similar methods found in this project.
-<br>
+<br><br>
 I'm combining this addition of 40-60% of salary values with those provided by employers - they're all estimates.
 Since this is an exploration of multi-class classification I take the quartile ranges of all the observed (estimated and given) salaries and assign each data point to a target value corresponding to the range (positive class) the salary falls within.
-<br>
+<br><br>
 Optimal preprocessing and model hyperparameters needed for each target (quartile/positive class) /model are developed using a combination of GridSearchCV and pipelines from sklearn. These settings are then transferred to a new pipeline where I train, test, and evaluate each model before extracting the probabilistic outputs underlying the otherwise binary classifications for each class. To arrive at the final prediction I compare the probabilities for each model's prediction and select the class with the strongest probability.
 
 
